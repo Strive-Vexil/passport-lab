@@ -19,7 +19,7 @@ const userModel = {
     try {
       const file = await fs.readFile(DB_PATH, "utf8");
       const users: Express.User[] = JSON.parse(file);
-      return users.find((u) => u.id === id);
+      return users.find((u: any) => String(u.id) === String(id));
     } catch {
       return undefined;
     }
@@ -52,6 +52,7 @@ declare global {
       id: string | number;
       name: string;
       email?: string;
+      password?: string;
       role?: string;
     }
   }

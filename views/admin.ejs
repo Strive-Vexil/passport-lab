@@ -1,0 +1,18 @@
+<div class="container mt-5">
+  <h1>Dashboard</h1>
+  <p class="lead">Welcome <%= user && user.name ? user.name : '' %></p>
+
+  <h5 class="mt-4">Current Active Sessions:</h5>
+
+  <% if (sessions && sessions.length) { %>
+    <% sessions.forEach(function (session) { %>
+      <div class="mb-2">
+        <div>SessionID: <%= session.sessionId %></div>
+        <div>UserID: <%= session.userId %></div>
+        <a href="/admin/revoke/<%= session.sessionId %>">Revoke Session</a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No active sessions.</p>
+  <% } %>
+</div>

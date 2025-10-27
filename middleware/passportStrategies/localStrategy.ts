@@ -40,10 +40,11 @@ FIX ME (types) 😭
 passport.deserializeUser(async (id: string, done) => {
   try {
     const user = await getUserById(id);
-    if (user) done(null, user);
-    else done({ message: "User not found" }, null);
+    if (user) 
+      return done(null, user);
+    return done({ message: "User not found" }, null);
   } catch (err) {
-    done(err, null);
+    return done(err, null);
   }
 });
 

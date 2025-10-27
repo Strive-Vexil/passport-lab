@@ -1,28 +1,37 @@
 import {userModel} from "../models/userModel";
 
-const getUserByEmailIdAndPassword = async (email: string, password: string) => {
-  let user = userModel.findOne(email);
-  if (user) {
-    if (isUserValid(user, password)) {
-      return user;
-    }
-    throw new Error('Password is incorrect');
-  }
-  return null;
-};
-const getUserById = (id:any) => {
-  let user = userModel.findById(id);
-  if (user) {
-    return user;
-  }
-  return null;
+const getUserByEmail = async (email: string) => {
+  const user = await userModel.findOne(email.trim().toLowerCase());
+  return user || null;
 };
 
-function isUserValid(user: any, password: string) {
-  return user.password === password;
-}
+const getUserByEmailIdAndPassword = async (email: string, password: string) => {
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanPassword = password.trim();
+
+  const user = await userModel.findOne(cleanEmail);
+
+  if (!user) {
+    
+    return null;
+  }
+
+  if ((user.password || "").trim() !== cleanPassword) {
+    
+    throw new Error("Password is incorrect");
+  }
+
+  return user;
+};
+
+
+const getUserById = async (id: any) => {
+  const user = await userModel.findById(id);
+  return user || null;
+};
 
 export {
+  getUserByEmail,
   getUserByEmailIdAndPassword,
   getUserById,
 };
