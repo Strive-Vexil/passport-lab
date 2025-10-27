@@ -1,3 +1,10 @@
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+}
+
 const database = [
   {
     id: 1,
@@ -19,23 +26,22 @@ const database = [
   },
 ];
 
+
+
 const userModel = {
 
   /* FIX ME (types) 😭 */
-  findOne: (email: any) => {
+  findOne: (email: string): User | undefined => {
     const user = database.find((user) => user.email === email);
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with email: ${email}`);
+    return undefined;  // return undefined if user is not found
   },
   /* FIX ME (types) 😭 */
-  findById: (id: any) => {
+   findById: (id: number): User | undefined => {
     const user = database.find((user) => user.id === id);
-    if (user) {
-      return user;
-    }
-    throw new Error(`Couldn't find user with id: ${id}`);
+    return user || undefined;
   },
 };
 

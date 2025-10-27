@@ -5,6 +5,12 @@
         <img src="/secure-icon.png" alt="icon" width="20%" />
       </h1>
       <h2>Login</h2>
+      <div class="error-message mt-3">
+        <% if (loginStatus) { %>
+          <div class="alert alert-danger text-center"><%= loginStatus %></div>
+        <% } %>
+      </div>
+      
       <form action="/auth/login" method="POST">
         <div class="form-group">
           <label for="email">Email</label>
@@ -27,6 +33,10 @@
           />
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <p class="mt-4 text-center">OR</p>
+        <button class="btn btn-dark btn-block">
+        <a href="/auth/github" style="color: white;">Login with GitHub</a>
+      </button>
       </form>
       <p class="mt-4">New User? <a href="/auth/register">Register</a></p>
       <p>Forgot Password? <a href="/auth/forgot">Reset</a></p>

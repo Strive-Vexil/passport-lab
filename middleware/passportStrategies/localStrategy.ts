@@ -8,13 +8,22 @@ const localStrategy = new LocalStrategy(
     usernameField: "email",
     passwordField: "password",
   },
-  (email, password, done) => {
-    const user = getUserByEmailIdAndPassword(email, password);
-    return user
-      ? done(null, user)
-      : done(null, false, {
-          message: "Your login details are not valid. Please try again",
+  async (email, password, done) => {
+    try {
+      const user = await getUserByEmailIdAndPassword(email, password);
+
+      if (!user) {
+        return done(null, false, {
+          message: `Couldn't find user with email: ${email}`,
         });
+      }
+      return done(null, user);
+    } catch (err) {
+      const msg = err && typeof (err as any).message === "string"
+      ? (err as any).message
+      : "Login failed";
+      return done(null, false, { message: msg });
+    }
   }
 );
 
@@ -28,12 +37,13 @@ passport.serializeUser(function (user: any, done: any) {
 /*
 FIX ME (types) 😭
 */
-passport.deserializeUser(function (id: any, done: any) {
-  let user = getUserById(id);
-  if (user) {
-    done(null, user);
-  } else {
-    done({ message: "User not found" }, null);
+passport.deserializeUser(async (id: string, done) => {
+  try {
+    const user = await getUserById(id);
+    if (user) done(null, user);
+    else done({ message: "User not found" }, null);
+  } catch (err) {
+    done(err, null);
   }
 });
 

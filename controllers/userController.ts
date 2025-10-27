@@ -1,11 +1,12 @@
 import {userModel} from "../models/userModel";
 
-const getUserByEmailIdAndPassword = (email: string, password: string) => {
+const getUserByEmailIdAndPassword = async (email: string, password: string) => {
   let user = userModel.findOne(email);
   if (user) {
     if (isUserValid(user, password)) {
       return user;
     }
+    throw new Error('Password is incorrect');
   }
   return null;
 };
