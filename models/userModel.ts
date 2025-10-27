@@ -1,48 +1,58 @@
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-}
+import fs from "node:fs/promises";
 
-const database = [
-  {
-    id: 1,
-    name: "Jimmy Smith",
-    email: "jimmy123@gmail.com",
-    password: "jimmy123!",
-  },
-  {
-    id: 2,
-    name: "Johnny Doe",
-    email: "johnny123@gmail.com",
-    password: "johnny123!",
-  },
-  {
-    id: 3,
-    name: "Jonathan Chen",
-    email: "jonathan123@gmail.com",
-    password: "jonathan123!",
-  },
-];
-
-
+const DB_PATH = "database.json";
 
 const userModel = {
-
   /* FIX ME (types) 😭 */
-  findOne: (email: string): User | undefined => {
-    const user = database.find((user) => user.email === email);
-    if (user) {
-      return user;
+  async findOne(email: string): Promise<Express.User | undefined> {
+    try {
+      const file = await fs.readFile(DB_PATH, "utf8");
+      const users: Express.User[] = JSON.parse(file);
+      return users.find((u) => u.email === email);
+    } catch {
+      return undefined;
     }
-    return undefined;  // return undefined if user is not found
   },
-  /* FIX ME (types) 😭 */
-   findById: (id: number): User | undefined => {
-    const user = database.find((user) => user.id === id);
-    return user || undefined;
-  },
-};
 
-export { database, userModel };
+  /* FIX ME (types) 😭 */
+  async findById(id: string | number): Promise<Express.User | undefined> {
+    try {
+      const file = await fs.readFile(DB_PATH, "utf8");
+      const users: Express.User[] = JSON.parse(file);
+      return users.find((u) => u.id === id);
+    } catch {
+      return undefined;
+    }
+  },
+
+  /**
+   * Create a new user and persist to database.json
+   */
+  async create(newUser: Express.User): Promise<Express.User> {
+    let users: Express.User[] = [];
+
+    try {
+      const file = await fs.readFile(DB_PATH, "utf8");
+      users = JSON.parse(file);
+    } catch {
+      users = [];
+    }
+
+    users.push(newUser);
+    await fs.writeFile(DB_PATH, JSON.stringify(users, null, 2), "utf8");
+
+    return newUser;
+  },
+}
+export { userModel };
+
+declare global {
+  namespace Express {
+    export interface User {
+      id: string | number;
+      name: string;
+      email?: string;
+      role?: string;
+    }
+  }
+}
