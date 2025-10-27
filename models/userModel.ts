@@ -25,9 +25,6 @@ const userModel = {
     }
   },
 
-  /**
-   * Create a new user and persist to database.json
-   */
   async create(newUser: Express.User): Promise<Express.User> {
     let users: Express.User[] = [];
 
